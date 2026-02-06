@@ -80,22 +80,34 @@
 <script>
     const surveyForm = document.getElementById('surveyForm');
 
-    surveyForm.onsubmit = async (e) => {
-        e.preventDefault();
-        
-        const formData = {
-            full_name: document.getElementById('full_name').value,
-            email: document.getElementById('email').value,
-            rating: parseInt(document.getElementById('rating').value),
-            feedback: document.getElementById('feedback').value
-        };
-
-        console.log("Form Data Collected:", formData);
-        alert("Thank you! Your response has been recorded.");
-        
-        // Reset form after submission
-        surveyForm.reset();
+surveyForm.onsubmit = async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        full_name: document.getElementById('full_name').value,
+        email: document.getElementById('email').value,
+        rating: parseInt(document.getElementById('rating').value),
+        feedback: document.getElementById('feedback').value
     };
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            alert("Data saved to database!");
+            surveyForm.reset();
+        } else {
+            alert("Error saving data.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Cannot connect to server.");
+    }
+};
 </script>
 
 </body>
