@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from sqlmodel import Session, SQLModel, create_engine
 from fastapi.middleware.cors import CORSMiddleware
 from models import Survey
+from typing import List
+from sqlmodel import select
 
 
 sqlite_url = "sqlite:///survey.db"
@@ -34,3 +36,10 @@ def submit_survey(survey: Survey):
         session.commit()
         session.refresh(survey)
         return survey
+
+# New Endpoint: View all survey entries
+@app.get("/data", response_model=List[Survey])
+def read_data():
+    with Session(engine) as session:
+        surveys = session.exec(select(Survey)).all()
+        return surveys
