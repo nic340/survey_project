@@ -3,111 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Satisfaction Survey</title>
+    <title>Flood Control Project Survey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2563eb;
-            --bg-color: #f3f4f6;
+            --primary: #0f4c81;
+            --accent: #2196f3;
+            --bg: #eef2f6;
+            --surface: #ffffff;
+            --error: #dc2626;
+            --success: #059669;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color);
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            color: #333;
+            padding: 1rem;
         }
+
         .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 550px; /* Slightly wider for the radio buttons */
+            border-top: 6px solid var(--primary);
         }
-        h2 { margin-top: 0; color: #333; text-align: center; }
-        .field { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #555; }
-        input, textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            box-sizing: border-box; 
+
+        h1 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
         }
-        textarea { height: 100px; resize: vertical; }
-        button { 
+
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .field { margin-bottom: 1.5rem; }
+
+        label.field-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.9rem;
+        }
+
+        /* Standard Inputs */
+        input[type="text"], input[type="email"], textarea {
             width: 100%;
-            background: var(--primary-color); 
-            color: white; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 4px; 
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer; 
-            transition: background 0.3s;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            font-family: inherit;
         }
-        button:hover { background: #1d4ed8; }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        input:invalid { border-color: #fca5a5; }
+
+        textarea { resize: vertical; min-height: 100px; }
+
+        /* --- NEW: Radio Card Styling --- */
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        /* Hide the actual circular radio button */
+        .radio-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* The visible card */
+        .radio-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 5px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 100%;
+            text-align: center;
+        }
+
+        .radio-card .number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #6b7280;
+        }
+
+        .radio-card .label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            line-height: 1.2;
+        }
+
+        /* Hover State */
+        .radio-option:hover .radio-card {
+            border-color: var(--accent);
+            background-color: #f0f9ff;
+        }
+
+        /* Checked State (When user clicks) */
+        .radio-option input[type="radio"]:checked + .radio-card {
+            border-color: var(--primary);
+            background-color: var(--primary);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-card .number,
+        .radio-option input[type="radio"]:checked + .radio-card .label {
+            color: white;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 1rem;
+        }
+
+        button:hover { background-color: #0a355c; }
+        button:active { transform: scale(0.98); }
+        button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+        /* Messages */
+        #message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .success { background-color: #d1fae5; color: var(--success); border: 1px solid #34d399; }
+        .error { background-color: #fee2e2; color: var(--error); border: 1px solid #f87171; }
+        
+        /* Mobile adjustment */
+        @media (max-width: 480px) {
+            .radio-group { flex-direction: column; gap: 8px; }
+            .radio-card { flex-direction: row; gap: 10px; padding: 12px; justify-content: flex-start; }
+            .radio-card .number { margin: 0; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Survey Form</h2>
+    <h1>📢 Public Works Feedback</h1>
+    <p class="subtitle">Help us improve. Please rate your satisfaction with the recent <strong>Flood Control Projects</strong> in your area.</p>
+    
     <form id="surveyForm">
         <div class="field">
-            <label for="full_name">Full Name</label>
-            <input type="text" id="full_name" placeholder="John Doe" required>
+            <label class="field-label" for="full_name">Full Name (Optional)</label>
+            <input type="text" id="full_name" placeholder="Juan Dela Cruz">
         </div>
+
         <div class="field">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="john@example.com" required>
+            <label class="field-label" for="email">Email Address <span style="color:red">*</span></label>
+            <input 
+                type="email" 
+                id="email" 
+                placeholder="name@email.com" 
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+" 
+                title="Please enter a valid email address (e.g. user@domain.com)"
+                required
+            >
         </div>
+
         <div class="field">
-            <label for="rating">Service Rating (1-5)</label>
-            <input type="number" id="rating" min="1" max="5" value="5" required>
+            <label class="field-label">Satisfaction Level <span style="color:red">*</span></label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" name="rating" value="1" required>
+                    <div class="radio-card">
+                        <span class="number">1</span>
+                        <span class="label">Very<br>Poor</span>
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="rating" value="2">
+                    <div class="radio-card">
+                        <span class="number">2</span>
+                        <span class="label">Poor</span>
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="rating" value="3">
+                    <div class="radio-card">
+                        <span class="number">3</span>
+                        <span class="label">Neutral</span>
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="rating" value="4">
+                    <div class="radio-card">
+                        <span class="number">4</span>
+                        <span class="label">Good</span>
+                    </div>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="rating" value="5">
+                    <div class="radio-card">
+                        <span class="number">5</span>
+                        <span class="label">Very<br>Good</span>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="field">
-            <label for="feedback">Additional Feedback</label>
-            <textarea id="feedback" placeholder="Tell us about your experience..."></textarea>
+            <label class="field-label" for="feedback">Observations / Comments</label>
+            <textarea id="feedback" placeholder="E.g., Taga tuhod na ang baha sa CSM Building..."></textarea>
         </div>
-        <button type="submit">Submit Response</button>
+
+        <button type="submit">Submit Feedback</button>
     </form>
+    
+    <div id="message"></div>
 </div>
 
 <script>
     const surveyForm = document.getElementById('surveyForm');
+    const messageDiv = document.getElementById('message');
 
-surveyForm.onsubmit = async (e) => {
-    e.preventDefault();
-    
-    const formData = {
-        full_name: document.getElementById('full_name').value,
-        email: document.getElementById('email').value,
-        rating: parseInt(document.getElementById('rating').value),
-        feedback: document.getElementById('feedback').value
-    };
+    surveyForm.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        // 1. Get Values
+        const emailInput = document.getElementById('email');
+        const emailValue = emailInput.value;
 
-    try {
-        const response = await fetch('http://127.0.0.1:8000/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-
-        if (response.ok) {
-            alert("Data saved to database!");
-            surveyForm.reset();
-        } else {
-            alert("Error saving data.");
+        // --- NEW: Get Selected Radio Button ---
+        // We use querySelector to find the one input inside the group that is checked
+        const selectedRating = document.querySelector('input[name="rating"]:checked');
+        
+        // Manual validation if browser misses it
+        if (!selectedRating) {
+            alert("Please select a satisfaction rating.");
+            return;
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Cannot connect to server.");
-    }
-};
+
+        // Email Validation
+        if (!emailValue.includes('@') || !emailValue.includes('.')) {
+            messageDiv.innerText = "⚠️ Please enter a valid email address containing '@' and '.'";
+            messageDiv.className = "error";
+            messageDiv.style.display = "block";
+            emailInput.focus();
+            return; 
+        }
+
+        // UI State: Loading
+        const btn = surveyForm.querySelector('button');
+        const originalText = btn.innerText;
+        btn.innerText = "Submitting...";
+        btn.disabled = true;
+        messageDiv.style.display = "none";
+
+        const formData = {
+            full_name: document.getElementById('full_name').value || "Anonymous",
+            email: emailValue,
+            rating: parseInt(selectedRating.value), // Use the value from the radio button
+            feedback: document.getElementById('feedback').value
+        };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                messageDiv.innerText = "✅ Thank you! Your feedback has been recorded.";
+                messageDiv.className = "success";
+                messageDiv.style.display = "block";
+                surveyForm.reset();
+            } else {
+                throw new Error("Server rejected request");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            messageDiv.innerText = "❌ Error connecting to server.";
+            messageDiv.className = "error";
+            messageDiv.style.display = "block";
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    };
 </script>
 
 </body>
